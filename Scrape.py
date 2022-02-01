@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
+
 class Scrape:
     out = ''
     city = ''
@@ -11,22 +12,22 @@ class Scrape:
     neighborhood = ''
     houses_ads_url = []
     scraping_df = pd.DataFrame()
-    
+
     def __init__(self) -> None:
         pass
-        
+
     def get_name(self):
         c = input('Enter City Name : ').lower().strip()
-        while(c ==  '' ):
-            c= input('Enter City Name : ').lower().strip()
-        d = input('Enter District Name : ').lower().strip() 
+        while(c == ''):
+            c = input('Enter City Name : ').lower().strip()
+        d = input('Enter District Name : ').lower().strip()
         n = input('Enter Neighborhood Name : ').lower().strip()
-        
+
         translationTable = str.maketrans("ğıİöüşç", "giIousc")
         self.city = c.translate(translationTable)
         self.district = d.translate(translationTable)
         self.neighborhood = n.translate(translationTable)
-    
+
     def requests_page(self):
         if self.district == '':
             self.URL = 'https://www.hepsiemlak.com/'+self.city+'-satilik'
@@ -34,8 +35,8 @@ class Scrape:
             if self.neighborhood == '':
                 self.URL = 'https://www.hepsiemlak.com/'+self.district+'-satilik'
             else:
-                self.URL = 'https://www.hepsiemlak.com/' +self.district + '-' + self.neighborhood+'-satilik'
-        
+                self.URL = 'https://www.hepsiemlak.com/' + self.district + '-' + self.neighborhood+'-satilik'
+
         self.page = requests.get(self.URL)
 
     def get_number_of_pages(self):
@@ -71,7 +72,6 @@ class Scrape:
         building_facade = []
         building_fuel_type = []
         price = []
-        
 
         for i in range(len(self.houses_ads_url)):
             each_house = requests.get(self.houses_ads_url[i])
@@ -85,12 +85,12 @@ class Scrape:
             b_age = soup.find('span', string='Bina Yaşı')
             warming_t = soup.find('span', string='Isınma Tipi')
             numberfloors = soup.find('span', string='Kat Sayısı')
-            countbathroom =soup.find('span', string='Banyo Sayısı')
-            item_status =soup.find('span', string='Eşya Durumu')
+            countbathroom = soup.find('span', string='Banyo Sayısı')
+            item_status = soup.find('span', string='Eşya Durumu')
             building_t = soup.find('span', string='Yapı Tipi')
             build_facade = soup.find('span', string='Cephe')
-            build_fuel_type  = soup.find('span', string='Yakıt Tipi')
-            house_price = soup.find('p',class_='fontRB fz24 price')
+            build_fuel_type = soup.find('span', string='Yakıt Tipi')
+            house_price = soup.find('p', class_='fontRB fz24 price')
 
             if not id:
                 advert_id.append(np.NaN)
@@ -131,37 +131,37 @@ class Scrape:
                 number_of_floors.append(np.NaN)
             else:
                 number_of_floors.append(numberfloors.find_next_sibling('span').text)
-            
+
             if not countbathroom:
                 count_of_bathroom.append(np.NaN)
             else:
                 count_of_bathroom.append(countbathroom.find_next_sibling('span').text)
-            
+
             if not item_status:
                 item_stat.append(np.NaN)
             else:
                 item_stat.append(item_status.find_next_sibling('span').text)
-                
+
             if not building_t:
                 building_type.append(np.NaN)
             else:
                 building_type.append(building_t.find_next_sibling('span').text)
-            
+
             if not build_facade:
                 building_facade.append(np.NaN)
             else:
                 building_facade.append(build_facade.find_next_sibling('span').text)
-            
+
             if not build_fuel_type:
                 building_fuel_type.append(np.NaN)
             else:
                 building_fuel_type.append(build_fuel_type.find_next_sibling('span').text)
-                
+
             if not house_price:
                 price.append(np.NaN)
             else:
-                price.append(house_price.text.replace('TL','').replace('.','').strip())
-                
+                price.append(house_price.text.replace('TL', '').replace('.', '').strip())
+
         self.scraping_df = pd.DataFrame({
             'Id': advert_id,
             'Room + Hall': room_hall,
@@ -170,14 +170,14 @@ class Scrape:
             'Floor Location': floor_location,
             'Building Age': building_age,
             'Warming Type': warming_type,
-            'Number of Floors':number_of_floors,
+            'Number of Floors': number_of_floors,
             'Count of Bathroom': count_of_bathroom,
-            'Item Status' : item_stat,
+            'Item Status': item_stat,
             'Building Type': building_type,
-            'Building Facade':building_facade,
-            'Building Fuel Type':building_fuel_type,
-            'Price' : price
-        })                     
+            'Building Facade': building_facade,
+            'Building Fuel Type': building_fuel_type,
+            'Price': price
+        })
 
     def dataframe_to_csv(self):
         if self.district == '':
@@ -186,12 +186,51 @@ class Scrape:
             self.out = 'DataSets/'+self.city+'-'+self.district+'.csv'
         else:
             self.out = 'DataSets/'+self.city+'-'+self.district+'-'+self.neighborhood+'.csv'
-            
+
         self.scraping_df.to_csv(self.out, index=False)
-    
+
     # Streamlit Section
-    
+
     def run(self):
+        flag = 0
+        
+        with st.form("my_form"):
+            c = st.text_input('Enter City Name :')
+            d = st.text_input('Enter District Name :')
+            n = st.text_input('Enter Neighborhood Name :')
+
+            submitted = st.form_submit_button("Submit")
+            if submitted:
+                with st.spinner('Wait for it...'):
+                    c = c.lower().strip()
+                    d = d.lower().strip()
+                    n = n.lower().strip()
+                    translationTable = str.maketrans("ğıİöüşç", "giIousc")
+                    self.city = c.translate(translationTable)
+                    self.district = d.translate(translationTable)
+                    self.neighborhood = n.translate(translationTable)
+
+                    self.requests_page()
+                    self.get_number_of_pages()
+                    self.get_each_house_advert_url()
+                    self.get_data_of_each_house()
+                    flag = 1
+
+        if flag == 1:
+            # download section
+            file_name = self.csv_out_name()
+            csv = self.convert_df(self.scraping_df)
+
+            st.dataframe(self.scraping_df)  # show dataframe
+
+            st.download_button(
+                label="Download data as CSV",
+                data=csv,
+                file_name=file_name,
+                mime='text/csv',
+            )
+
+        """
         c = st.text_input('Enter City Name :')
         d = st.text_input('Enter District Name :')
         n = st.text_input('Enter Neighborhood Name :')
@@ -222,8 +261,8 @@ class Scrape:
                 file_name=file_name,
                 mime='text/csv',
                 
-                )
-                    
+                )"""
+
     def csv_out_name(self):
         if self.district == '':
             self.out = self.city+'.csv'
@@ -232,7 +271,6 @@ class Scrape:
         else:
             self.out = self.city+'-'+self.district+'-'+self.neighborhood+'.csv'
         return self.out
-            
-    def convert_df(self,df):
-        return df.to_csv()        
-        
+
+    def convert_df(self, df):
+        return df.to_csv()
