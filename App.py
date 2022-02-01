@@ -5,12 +5,6 @@ from streamlit_option_menu import option_menu
 
 if __name__ == '__main__':
     
-    """ s1=Scrape()
-    s1.get_name()
-    s1.requests_page()
-    s1.get_number_of_pages()
-    """
-    
     st.set_page_config(page_title="Data Scraping From Real Estate Site",initial_sidebar_state='auto',page_icon='chart_with_upwards_trend')
     
     
