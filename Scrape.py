@@ -45,6 +45,7 @@ class Scrape:
         temp = []
         for x in p:
             temp.append(x.text)
+            st.write(x.text)
         self.number_of_pages = int(temp[-1])
         #print(self.number_of_pages)
 
