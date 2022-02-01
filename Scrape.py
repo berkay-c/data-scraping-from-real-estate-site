@@ -42,10 +42,9 @@ class Scrape:
     def get_number_of_pages(self):
         time.sleep(5)
         soup = BeautifulSoup(self.page.content, "lxml")
-        p = soup.find_all('li', class_='he-pagination__item')
+        p = soup.find('ul', class_='he-pagination__links')
         temp = []
         for x in p:
-            temp.append(x.text)
             st.write(x.text)
         self.number_of_pages = int(temp.pop())
         #print(self.number_of_pages)
