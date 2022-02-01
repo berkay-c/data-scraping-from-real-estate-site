@@ -45,7 +45,7 @@ class Scrape:
         p = soup.find('ul', class_='he-pagination__links')
         temp = []
         for x in p:
-            st.write(x.text)
+            temp.append(x.text)
         self.number_of_pages = int(temp.pop())
         #print(self.number_of_pages)
 
