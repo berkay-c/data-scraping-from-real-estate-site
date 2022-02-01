@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
 import streamlit as st
-
+import time
 
 class Scrape:
     out = ''
@@ -38,9 +38,10 @@ class Scrape:
                 self.URL = 'https://www.hepsiemlak.com/' + self.district + '-' + self.neighborhood+'-satilik'
 
         self.page = requests.get(self.URL)
-
+        time.sleep(3)
     def get_number_of_pages(self):
         soup = BeautifulSoup(self.page.content, "lxml")
+        time.sleep(3)
         p = soup.find('ul', class_='he-pagination__links')
         temp = []
         for x in p:
