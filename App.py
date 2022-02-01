@@ -5,6 +5,8 @@ from streamlit_option_menu import option_menu
 
 if __name__ == '__main__':
     
+   
+    
     st.set_page_config(page_title="Data Scraping From Real Estate Site",initial_sidebar_state='auto',page_icon='chart_with_upwards_trend')
     
     
@@ -30,4 +32,3 @@ if __name__ == '__main__':
         st.markdown("[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/berkay-c)")
         st.markdown("[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/berkay-c/)")
         st.markdown("[![Gmail](https://img.shields.io/badge/gmail-%23D14836.svg?&style=for-the-badge&logo=gmail&logoColor=white)](mailto:berkayyasinciftci@gmail.com?subject=Hola%20Jiji)")
-        
