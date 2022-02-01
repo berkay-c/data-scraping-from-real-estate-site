@@ -40,13 +40,14 @@ class Scrape:
         self.page = requests.get(self.URL)
         time.sleep(3)
     def get_number_of_pages(self):
+        time.sleep(5)
         soup = BeautifulSoup(self.page.content, "lxml")
         p = soup.find_all('li', class_='he-pagination__item')
         temp = []
         for x in p:
             temp.append(x.text)
             st.write(x.text)
-        self.number_of_pages = int(temp[-1])
+        self.number_of_pages = int(temp.pop())
         #print(self.number_of_pages)
 
     def get_each_house_advert_url(self):
