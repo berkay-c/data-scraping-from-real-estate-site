@@ -41,12 +41,18 @@ class Scrape:
         time.sleep(3)
     def get_number_of_pages(self):
         soup = BeautifulSoup(self.page.content, "lxml")
-        time.sleep(3)
         p = soup.find('ul', class_='he-pagination__links')
         temp = []
-        for x in p:
-            temp.append(x.text)
-        self.number_of_pages = int(temp[-1])
+        try:
+            if p is None:
+                st.write('İçi Boş')
+            else:
+                for x in p:
+                    temp.append(x.text)
+                self.number_of_pages = int(temp[-1])
+        except:
+            pass
+        
 
     def get_each_house_advert_url(self):
         for i in range(1, self.number_of_pages+1, 1):
