@@ -41,6 +41,7 @@ class Scrape:
         time.sleep(3)
     def get_number_of_pages(self):
         time.sleep(5)
+        
         soup = BeautifulSoup(self.page.content, "lxml")
         p = soup.find_all('li', class_='he-pagination__item')
         temp = []
