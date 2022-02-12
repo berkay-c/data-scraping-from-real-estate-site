@@ -40,7 +40,6 @@ class Scrape:
         self.page = requests.get(self.URL)
         time.sleep(3)
     def get_number_of_pages(self):
-        time.sleep(5)
         soup = BeautifulSoup(self.page.content, "lxml")
         p = soup.find('ul', class_='he-pagination__links')
         temp = []
@@ -95,74 +94,76 @@ class Scrape:
             house_price = soup.find('p', class_='fontRB fz24 price')
 
             if not id:
-                advert_id.append(np.NaN)
+                pass
             else:
                 advert_id.append(id.find_next_sibling('span').text)
+                
+                if not roomhall:
+                    room_hall.append(np.NaN)
+                else:
+                    room_hall.append(roomhall.find_next_sibling('span').text)
 
-            if not roomhall:
-                room_hall.append(np.NaN)
-            else:
-                room_hall.append(roomhall.find_next_sibling('span').text)
+                if not gross:
+                    gross_m2.append(np.NaN)
+                else:
+                    gross_m2.append(gross.find_next_sibling('span').text.strip())
 
-            if not gross:
-                gross_m2.append(np.NaN)
-            else:
-                gross_m2.append(gross.find_next_sibling('span').text.strip())
+                if not net:
+                    net_m2.append(np.NaN)
+                else:
+                    net_m2.append(net.find_next_sibling('span').find_next_sibling('span').text.replace('/', '').strip())
 
-            if not net:
-                net_m2.append(np.NaN)
-            else:
-                net_m2.append(net.find_next_sibling('span').find_next_sibling('span').text.replace('/', '').strip())
+                if not floor_loc:
+                    floor_location.append(np.NaN)
+                else:
+                    floor_location.append(floor_loc.find_next_sibling('span').text)
 
-            if not floor_loc:
-                floor_location.append(np.NaN)
-            else:
-                floor_location.append(floor_loc.find_next_sibling('span').text)
+                if not b_age:
+                    building_age.append(np.NaN)
+                else:
+                    building_age.append(b_age.find_next_sibling('span').text)
 
-            if not b_age:
-                building_age.append(np.NaN)
-            else:
-                building_age.append(b_age.find_next_sibling('span').text)
+                if not warming_t:
+                    warming_type.append(np.NaN)
+                else:
+                    warming_type.append(warming_t.find_next_sibling('span').text)
 
-            if not warming_t:
-                warming_type.append(np.NaN)
-            else:
-                warming_type.append(warming_t.find_next_sibling('span').text)
+                if not numberfloors:
+                    number_of_floors.append(np.NaN)
+                else:
+                    number_of_floors.append(numberfloors.find_next_sibling('span').text)
 
-            if not numberfloors:
-                number_of_floors.append(np.NaN)
-            else:
-                number_of_floors.append(numberfloors.find_next_sibling('span').text)
+                if not countbathroom:
+                    count_of_bathroom.append(np.NaN)
+                else:
+                    count_of_bathroom.append(countbathroom.find_next_sibling('span').text)
 
-            if not countbathroom:
-                count_of_bathroom.append(np.NaN)
-            else:
-                count_of_bathroom.append(countbathroom.find_next_sibling('span').text)
+                if not item_status:
+                    item_stat.append(np.NaN)
+                else:
+                    item_stat.append(item_status.find_next_sibling('span').text)
 
-            if not item_status:
-                item_stat.append(np.NaN)
-            else:
-                item_stat.append(item_status.find_next_sibling('span').text)
+                if not building_t:
+                    building_type.append(np.NaN)
+                else:
+                    building_type.append(building_t.find_next_sibling('span').text)
 
-            if not building_t:
-                building_type.append(np.NaN)
-            else:
-                building_type.append(building_t.find_next_sibling('span').text)
+                if not build_facade:
+                    building_facade.append(np.NaN)
+                else:
+                    building_facade.append(build_facade.find_next_sibling('span').text)
 
-            if not build_facade:
-                building_facade.append(np.NaN)
-            else:
-                building_facade.append(build_facade.find_next_sibling('span').text)
+                if not build_fuel_type:
+                    building_fuel_type.append(np.NaN)
+                else:
+                    building_fuel_type.append(build_fuel_type.find_next_sibling('span').text)
 
-            if not build_fuel_type:
-                building_fuel_type.append(np.NaN)
-            else:
-                building_fuel_type.append(build_fuel_type.find_next_sibling('span').text)
+                if not house_price:
+                    price.append(np.NaN)
+                else:
+                    price.append(house_price.text.replace('TL', '').replace('.', '').strip())
 
-            if not house_price:
-                price.append(np.NaN)
-            else:
-                price.append(house_price.text.replace('TL', '').replace('.', '').strip())
+            
 
         self.scraping_df = pd.DataFrame({
             'Id': advert_id,
@@ -221,7 +222,7 @@ class Scrape:
         if flag == 1:
             # download section
             file_name = self.csv_out_name()
-            csv = self.convert_df(self.scraping_df)
+            csv = self.convert_df_to_csv(self.scraping_df)
 
             st.dataframe(self.scraping_df)  # show dataframe
 
@@ -274,5 +275,5 @@ class Scrape:
             self.out = self.city+'-'+self.district+'-'+self.neighborhood+'.csv'
         return self.out
 
-    def convert_df(self, df):
-        return df.to_csv()
+    def convert_df_to_csv(self, df):
+        return df.to_csv(index=False)
